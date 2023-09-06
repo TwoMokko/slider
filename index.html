@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Slider</title>
+	<script src="https://res.cc.local/plugins/jquery-3.6.0.min.js"></script>
+	<script src="js/slider.js"></script>
+	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
+</head>
+<body>
+	<header></header>
+	<main>
+		<div class = "slider"></div>
+		<script>
+			$(() => {
+				new Slider($('div.slider'), 2008, 2023, new Date(2010, 4), new Date(2012, 5));
+			});
+		</script>
+	</main>
+	<footer></footer>
+</body>
+</html>

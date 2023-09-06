@@ -1,0 +1,52 @@
+@use "sass:map";
+
+@use "variable" as *;
+@use "func" as *;
+
+html { height: 100%; scroll-behavior: smooth; font-family: Raleway, sans-serif; font-size: 14px; line-height: 18px; /*font-weight: 600;*/ }
+body { margin: 0; padding: 0 10%; color: $color_text_main; height: 100%; }
+.hide { display: none; }
+
+div.slider {
+	display: grid; grid-template-columns: 200px 1117px; align-items: center; height: 227px; padding: 0 25px;
+	div.switcher {
+		//padding: 98px 119px 83px 25px;
+		//width: 200px;
+		> div { cursor: pointer; }
+		.switch_years { margin-bottom: 10px; }
+		.switch_months {display: inline-block;}
+	}
+	div.slider_container {
+		//width: 1117px;
+		.line_container {
+			width: 100%;
+			div.line {
+				position: relative; width: 100%; height: 10px;/* margin-right: 26px;*/ margin-bottom: 13px; background-color: $color_line; border-radius: 100px;
+				.touch { position: absolute; top: -5px; width: 10px; height: 10px; background-color: $color_touch; border: 5px solid $color_line_active; border-radius: 50%; cursor: pointer; }
+				.from { left: 190px; }
+				.until { left: 490px; }
+			}
+			div.line_years { display: flex; gap: 12px; }
+			div.line_month { display: flex; gap: 12px; }
+		}
+		.dates_container {
+			width: 1117px;
+			.dates { color: $color_text_date; cursor: grabbing; }
+			span {
+				display: inline-block; text-align: center;
+				&.year { width: 186px; }
+				&.month { width: 46px; }
+				&:nth-of-type(1) { text-align: left; width: 93px; }
+				&:nth-of-type(7) { text-align: right; width: 93px; }
+			}
+		}
+	}
+}
+
+.line_active { position: absolute; top: 2px; left: 195px; width: 300px; height: 6px; background-color: #5CADEA; }
+
+.window_from {}
+.window_until {}
+
+.active { font-weight: 600; }
+.inactive { border-bottom: 1px solid $color_border_inactive; opacity: 50%; }

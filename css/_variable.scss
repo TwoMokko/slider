@@ -1,0 +1,24 @@
+@use "sass:map";
+
+/* Sizes */
+$size3XS				: 240;
+$size2XS				: 360;
+$sizeXS					: 420;
+$sizeS					: 480;
+$sizeM					: 560;
+$sizeL					: 680;
+$sizeX					: 760;
+$sizeXL					: 860;
+$size2XL				: 980;
+$size3XL				: 1080;
+$size4XL				: 1200;
+$size5XL				: 1400;
+$size6XL				: 1920;
+
+/* Colors */
+$color_text_main		: #0167B3;
+$color_text_date		: #999999;
+$color_border_inactive	: #D3DCF1;
+$color_line				: #EDF1F8;
+$color_line_active		: #5CADEA;
+$color_touch			: #FFFFFF;
