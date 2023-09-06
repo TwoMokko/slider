@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "none",
+    "target": "esnext",
+    "lib" : ["ESNext", "DOM"],
+    "rootDirs": ["./"],
+    "outFile": "../js/slider.js",
+    "outDir": "../js",
+    "declaration": true,
+    "sourceMap": true,
+    "alwaysStrict": true
+  },
+  "include": ["**/*"],
+  "exclude": ["node_module"]
+}
