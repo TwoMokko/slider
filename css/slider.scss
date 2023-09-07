@@ -9,30 +9,27 @@ body { margin: 0; padding: 0 10%; color: $color_text_main; height: 100%; }
 
 div.slider {
 	@mixin ViewSlider($params: null) {
-		display: flex; //grid-template-columns: 200px 1117px; align-items: center; height: 227px; padding: 0 25px;
+		display: flex; flex-direction: GetParam($params, flex-direction); user-select: none;
 		> .switcher {
-			width: GetParam($params, 'switcher_width', 200px);
-			//padding: 98px 119px 83px 25px;
+			width: 179px; text-align: GetParam($params, text-align); margin: GetParam($params, margin); padding-top: 98px;
 			> div {
 				cursor: pointer;
-				> span {
-					display: inline-block;
-					&:not(:last-child) { margin-bottom: 10px; }
-				}
+				&:not(:last-child) { margin-bottom: 10px; }
+				> span { display: inline-block; }
 			}
 		}
 		> .space {
-			padding: 40px 0;
-			flex: auto; position: relative; overflow: hidden;
+			flex: auto; position: relative; overflow: hidden; height: 46px; padding: 90px 0 91px;
 			div.slider_container {
-				position: absolute; min-width: 100%;
+				position: absolute; top: 116px; min-width: 100%;
 				.line_container {
 					width: 100%;
 					div.line {
-						position: relative; width: 100%; height: 10px;/* margin-right: 26px;*/ margin-bottom: 13px; background-color: $color_line; border-radius: 100px;
-						.touch { position: absolute; top: -5px; width: 10px; height: 10px; background-color: $color_touch; border: 5px solid $color_line_active; border-radius: 50%; cursor: pointer; }
-						.from { /*left: 190px;*/ }
-						.until { /*left: 490px;*/ }
+						position: relative; width: 100%; height: 10px; margin-bottom: 13px; background-color: $color_line; border-radius: 100px;
+						.touch_container {
+							position: absolute; top: -5px;
+							.touch { width: 10px; height: 10px; background-color: $color_touch; border: 5px solid $color_line_active; border-radius: 50%; cursor: pointer; }
+						}
 					}
 					div.line_years { display: flex; gap: 12px; }
 					div.line_month { display: flex; gap: 12px; }
@@ -55,15 +52,20 @@ div.slider {
 			}
 		}
 	}
-	@include MixScreen(null, $sizeL) { @include ViewSlider((switcher_width: 140px)); }
-	@include MixScreen($sizeL, $sizeXL) { @include ViewSlider((switcher_width: 140px)); }
-	@include MixScreen($sizeXL, null) { @include ViewSlider(); }
+	@include MixScreen(null, $sizeX) { @include ViewSlider((flex-direction: column, text-align: center, margin: 0 auto)); }
+	@include MixScreen($sizeX, null) { @include ViewSlider(); }
 }
 
-.line_active { position: absolute; top: 2px; /*left: 195px; width: 300px;*/ height: 6px; background-color: #5CADEA; }
-
-.window_from {}
-.window_until {}
+.line_active { position: absolute; top: 2px; height: 6px; background-color: $color_line_active; }
+.window {
+	font-size: 18px; line-height: 24px;
+	position: absolute; left: 50%; padding: 6px 14px; background-color: white; border-radius: 12px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%);
+	display: flex; flex-direction: column; justify-content: center; align-items: center;
+	&.from { bottom: 4px; }
+	&.until { top: 62px; }
+}
+//.window_from { position: absolute; left: 50%; bottom: 4px; width: 100px; height: 60px; background-color: white; border-radius: 16px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%); }
+//.window_until { position: absolute; left: 50%; top: 62px; width: 100px; height: 60px; background-color: white; border-radius: 16px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%); }
 
 .active {  }
 .inactive { border-bottom: 1px solid $color_border_inactive; opacity: 50%; }

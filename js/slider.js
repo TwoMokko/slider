@@ -1,14 +1,16 @@
 "use strict";
+var States;
+(function (States) {
+    States[States["Years"] = 0] = "Years";
+    States[States["Months"] = 1] = "Months";
+})(States || (States = {}));
 class Slider {
+    state;
     year_from;
     year_until;
     year_count;
     size;
     years;
-    x_from;
-    x_until;
-    // month_from						: number;
-    // month_until						: number;
     year_from_active;
     year_until_active;
     month_from_active;
@@ -22,7 +24,9 @@ class Slider {
     $line;
     $line_active;
     $touch_from;
+    $touch_from_circle;
     $touch_until;
+    $touch_until_circle;
     $window_from;
     $window_until;
     $dates_container;
@@ -35,11 +39,12 @@ class Slider {
         this.year_until_active = date_until.getFullYear();
         this.month_from_active = date_from.getMonth();
         this.month_until_active = date_until.getMonth();
-        if (this.year_from_active < from_year || this.year_until_active > until_year) {
+        if ( /*this.year_from_active < from_year ||*/this.year_until_active > until_year) {
             container.append($('<div/>', { class: 'error', text: 'Неправильно введены данные' }));
             return;
         }
         this.year_count = this.year_until - this.year_from + 1;
+        this.state = States.Months;
         /* Elements */
         this.$switcher = $('<div/>', { class: 'switcher' });
         this.$switch_years = $('<span/>', { class: 'switch_years active', text: 'Все года' });
@@ -49,51 +54,74 @@ class Slider {
         this.$line_container = $('<div/>', { class: 'line_container' });
         this.$line = $('<div/>', { class: 'line' });
         this.$line_active = $('<div/>', { class: 'line_active' });
-        this.$touch_from = $('<div/>', { class: 'touch from' });
-        this.$touch_until = $('<div/>', { class: 'touch until' });
-        this.$window_from = $('<div/>', { class: 'window_from' });
-        this.$window_until = $('<div/>', { class: 'window_until' });
+        this.$touch_from = $('<div/>', { class: 'touch_container' });
+        this.$touch_from_circle = $('<div/>', { class: 'touch from' });
+        this.$touch_until = $('<div/>', { class: 'touch_container' });
+        this.$touch_until_circle = $('<div/>', { class: 'touch until' });
+        this.$window_from = $('<div/>', { class: 'window from' });
+        this.$window_until = $('<div/>', { class: 'window until' });
         this.$dates_container = $('<div/>', { class: 'dates_container' });
         this.$dates_years = $('<div/>', { class: 'dates years' });
         this.$dates_months = $('<div/>', { class: 'dates months hide' });
         /* Building DOM */
-        container.append($('<div/>', { class: 'slider' }).append(this.$switcher.append($('<div/>').append(this.$switch_years), $('<div/>').append(this.$switch_months)), this.$space.append(this.$slider_container.append(this.$line_container.append(this.$line.append(this.$line_active, this.$touch_from, this.$touch_until), this.$window_from, this.$window_until), this.$dates_container.append(this.$dates_years, this.$dates_months)))));
+        container.append($('<div/>', { class: 'slider' }).append(this.$switcher.append($('<div/>').append(this.$switch_years), $('<div/>').append(this.$switch_months)), this.$space.append(this.$slider_container.append(this.$line_container.append(this.$line.append(this.$line_active, this.$touch_from.append(this.$touch_from_circle, this.$window_from.append($('<div/>'), $('<div/>'))), this.$touch_until.append(this.$touch_until_circle, this.$window_until.append($('<div/>'), $('<div/>'))))), this.$dates_container.append(this.$dates_years, this.$dates_months)))));
         /* Events */
-        this.$switch_years.on('click', () => { this.DoSwitch('years'); });
-        this.$switch_months.on('click', () => { this.DoSwitch('months'); });
-        this.$touch_from.on('mousedown.touch', (e) => {
-            let x = e.pageX;
-            this.$slider_container.on('mousemove.touch', (e) => { this.MoveTouch(e, 'from', x); });
-            $(window).on('mouseup.touch', (e) => { this.$slider_container.off('mousemove.touch'); $(window).off('mouseup.touch'); });
+        this.$switch_years.on('click', () => { this.state = States.Years; this.DoSwitch('years'); });
+        this.$switch_months.on('click', () => { this.state = States.Months; this.DoSwitch('months'); });
+        this.$touch_from_circle.on('mousedown.slider', (e) => {
+            let startX = e.pageX;
+            let l = this.$touch_from.position().left;
+            $(window).on('mousemove.slider', (e) => { this.MoveTouch('from', l + e.pageX - startX); });
+            $(window).on('mouseup.slider', (e) => { $(window).off('mousemove.slider'); $(window).off('mouseup.slider'); });
         });
-        this.$touch_until.on('mousedown.touch', (e) => {
-            let x = e.pageX;
-            this.$slider_container.on('mousemove.touch', (e) => { this.MoveTouch(e, 'until', x); });
-            $(window).on('mouseup.touch', (e) => { this.$slider_container.off('mousemove.touch'); $(window).off('mouseup.touch'); });
+        this.$touch_until_circle.on('mousedown.slider', (e) => {
+            let startX = e.pageX;
+            let l = this.$touch_until.position().left;
+            $(window).on('mousemove.slider', (e) => { this.MoveTouch('until', l + e.pageX - startX); });
+            $(window).on('mouseup.slider', (e) => { $(window).off('mousemove.slider'); $(window).off('mouseup.slider'); });
         });
-        this.$dates_years.on('mousedown.years', (e) => {
-            this.$dates_years.on('mousemove.years', (e) => { this.MoveYears(e, 'mousemove'); });
-            $(window).on('mouseup.years', (e) => { this.$dates_years.off('mousemove.years'); $(window).off('mouseup.years'); });
+        this.$touch_from_circle.on('touchstart.slider', (e) => {
+            let startX = e.touches[0].pageX;
+            let l = this.$touch_from.position().left;
+            $(window).on('touchmove.slider', (e) => { this.MoveTouch('from', l + e.touches[0].pageX - startX); });
+            $(window).on('touchend.slider', (e) => { $(window).off('touchmove.slider'); $(window).off('touchend.slider'); });
         });
-        this.$dates_years.on('touchstart.years', (e) => {
-            // let left_position = this.$slider_container.position().left;
-            // let startX = e.touches[0].pageX;
-            // this.$dates_years.on('touchmove.years', (e) => { this.MoveYears(e, 'touchmove', startX, left_position) });
-            // $(window).on('touchend.years', (e) => { this.$dates_years.off('touchmove.years'); this.$dates_years.off('touchend.years'); });
+        this.$touch_until_circle.on('touchstart.slider', (e) => {
+            let startX = e.touches[0].pageX;
+            let l = this.$touch_until.position().left;
+            $(window).on('touchmove.slider', (e) => { this.MoveTouch('until', l + e.touches[0].pageX - startX); });
+            $(window).on('touchend.slider', (e) => { $(window).off('touchmove.slider'); $(window).off('touchend.slider'); });
         });
-        this.$dates_years.on('wheel', (e) => { this.MoveYears(e, 'wheel'); });
-        this.$dates_months.on('mousedown.months', (e) => {
-            this.$dates_months.on('mousemove.months', (e) => { });
-            $(window).on('mouseup.months', (e) => { this.$dates_months.off('touchmove.months'); $(window).off('touchend.months'); });
+        this.$dates_years.on('mousedown.slider', (e) => {
+            let startX = e.pageX;
+            let l = this.$slider_container.position().left;
+            $(window).on('mousemove.slider', (e) => { this.MoveYears(e, 'mousemove', startX, l); });
+            $(window).on('mouseup.slider', (e) => { $(window).off('mousemove.slider'); $(window).off('mouseup.slider'); });
         });
-        this.$dates_months.on('touchstart.months', (e) => {
-            this.$dates_months.on('touchmove.months', (e) => { });
-            $(window).on('touchend.months', (e) => { });
+        this.$dates_years.on('touchstart.slider', (e) => {
+            let startX = e.touches[0].pageX;
+            let l = this.$slider_container.position().left;
+            $(window).on('touchmove.slider', (e) => { this.MoveYears(e, 'touchmove', startX, l); });
+            $(window).on('touchend.slider', (e) => { $(window).off('touchmove.slider'); $(window).off('touchend.slider'); });
         });
-        this.$dates_months.on('wheel', (e) => { });
+        // this.$dates_years.on('wheel', (e) => { this.MoveYears(e, 'wheel'); });
+        this.$dates_months.on('mousedown.slider', (e) => {
+            let startX = e.pageX;
+            let l = this.$slider_container.position().left;
+            $(window).on('mousemove.slider', (e) => { this.MoveYears(e, 'mousemove', startX, l); });
+            $(window).on('mouseup.slider', (e) => { $(window).off('mousemove.slider'); $(window).off('mouseup.slider'); });
+        });
+        this.$dates_months.on('touchstart.slider', (e) => {
+            let startX = e.touches[0].pageX;
+            let l = this.$slider_container.position().left;
+            $(window).on('touchmove.slider', (e) => { this.MoveYears(e, 'touchmove', startX, l); });
+            $(window).on('touchend.slider', (e) => { $(window).off('touchmove.slider'); $(window).off('touchend.slider'); });
+        });
+        // this.$dates_months.on('wheel', (e) => {});
         this.CreateSliderDates();
         this.Redraw();
         this.DrawLine();
+        this.ChangeDate();
         $(window).on('resize', () => { this.Redraw(); this.DrawLine(); });
     }
     CreateSliderDates() {
@@ -155,58 +183,75 @@ class Slider {
             this.size = 79;
     }
     DrawLine() {
-        let left_from = Math.floor((this.year_from_active - this.year_from) * this.size + this.size / 12 * this.month_from_active);
-        let left_until = Math.floor((this.year_until_active - this.year_from) * this.size + this.size / 12 * this.month_until_active);
+        let left_from = (this.year_from_active - this.year_from) * 2 * this.size + this.size / 6 * (this.month_from_active - 1); //
+        let left_until = (this.year_until_active - this.year_from) * 2 * this.size + this.size / 6 * (this.month_until_active - 1); // + this.size / 6 * (this.month_until_active - 1)
         let width_line = left_until - left_from;
         this.$touch_from.css('left', left_from);
         this.$touch_until.css('left', left_until);
         this.$line_active.css('left', left_from + 5);
         this.$line_active.width(width_line);
     }
-    RedrawLine() { }
-    MoveYears(e, param, startX, left_pos) {
-        let left = this.$slider_container.position().left;
+    MoveYears(e, param, startX, l) {
+        let left;
         switch (param) {
             case 'wheel':
-                e.originalEvent.wheelDelta < 0 ? left = left + e.originalEvent.offsetY : left = left - e.originalEvent.offsetY;
-                if (Math.floor(-left + this.$space.width()) >= (this.$slider_container.width()) + e.originalEvent.offsetY)
-                    return;
+                l = this.$slider_container.position().left;
+                e.originalEvent.wheelDelta < 0 ? left = l + e.originalEvent.offsetY : left = l - e.originalEvent.offsetY;
                 break;
             case 'mousemove':
-                left += e.originalEvent.movementX;
-                if (Math.floor(-left + this.$space.width()) >= (this.$slider_container.width()) + e.originalEvent.movementX)
-                    return;
+                left = l + e.pageX - startX;
                 break;
             case 'touchmove':
-            // let currentX = e.touches[0].pageX;
-            // console.log(currentX - startX);
-            // left = left_pos + currentX - startX;
-            // break;
+                left = l + e.touches[0].pageX - startX;
+                break;
         }
         if (left > 0)
-            return;
+            left = 0;
+        if ((this.$space.width() - left) > this.$slider_container.width())
+            left = this.$space.width() - this.$slider_container.width();
         this.$slider_container.css('left', left);
     }
-    MoveTouch(e, param, x) {
+    MoveTouch(param, left) {
         let left_from = this.$touch_from.position().left;
         let left_until = this.$touch_until.position().left;
         switch (param) {
             case 'from':
-                left_from += e.originalEvent.movementX;
-                if (left_from > (left_until - 20))
-                    return;
-                this.$touch_from.css('left', left_from);
-                this.$line_active.css('left', left_from + 5);
-                this.$line_active.width(this.$line_active.width() - e.originalEvent.movementX);
+                if (left > (left_until - 20))
+                    left = left_until - 20;
+                if (left < 0)
+                    left = 0;
+                this.$touch_from.css('left', left);
+                this.$line_active.css('left', left + 5);
+                left_from = left;
                 break;
             case 'until':
-                left_until += e.originalEvent.movementX;
-                if (left_until < (left_from + 20))
-                    return;
-                this.$touch_until.css('left', left_until);
-                this.$line_active.width(this.$line_active.width() + e.originalEvent.movementX);
+                if (left < (left_from + 20))
+                    left = left_from + 20;
+                if (left > (this.$dates_container.width() - 20))
+                    left = this.$dates_container.width() - 20;
+                this.$touch_until.css('left', left);
+                left_until = left;
                 break;
         }
+        this.$line_active.width(left_until - left_from);
+        this.ChangeDate();
+    }
+    GetDate(left) {
+        let count_left = Math.floor(left / this.size / 2);
+        let size_m = (2 * this.size) / 12;
+        let left_m = left - 2 * this.size * count_left;
+        let year = count_left + this.year_from;
+        let month = Math.floor(left_m / size_m);
+        return [year, month];
+    }
+    ChangeDate() {
+        let from = this.GetDate(this.$touch_from.position().left);
+        let until = this.GetDate(this.$touch_until.position().left);
+        let months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        this.$window_from.children(':first-child').text(months[from[1]]);
+        this.$window_from.children(':last-child').text(from[0]);
+        this.$window_until.children(':first-child').text(months[until[1]]);
+        this.$window_until.children(':last-child').text(until[0]);
     }
 }
 //# sourceMappingURL=slider.js.map

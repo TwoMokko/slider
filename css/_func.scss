@@ -2,7 +2,7 @@
 
 @use "variable" as *;
 
-@function GetParam($params, $name, $default) {
+@function GetParam($params, $name, $default: null) {
 	@if ($params == null) { @return $default; }
 	$value: map.get($params, $name);
 	@if ($value != null) { @return $value; }
