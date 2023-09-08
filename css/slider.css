@@ -1,0 +1,282 @@
+/* Sizes */
+/* Colors */
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+  font-family: Raleway, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+body {
+  margin: 0;
+  padding: 0 10%;
+  color: #0167B3;
+  height: 100%;
+}
+
+.hide {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  div.slider {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    padding: 0 25px;
+  }
+  div.slider > .switcher {
+    width: 179px;
+    text-align: center;
+    margin: 0 auto;
+    padding-top: 98px;
+  }
+  div.slider > .switcher > div {
+    cursor: pointer;
+  }
+  div.slider > .switcher > div:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  div.slider > .switcher > div > span {
+    display: inline-block;
+  }
+  div.slider .spaces {
+    flex: auto;
+    position: relative;
+  }
+  div.slider .space {
+    position: relative;
+    overflow: hidden;
+    height: 46px;
+    padding: 90px 0 91px;
+  }
+  div.slider .space div.slider_container {
+    position: absolute;
+    top: 116px;
+    min-width: 100%;
+  }
+  div.slider .space div.slider_container .line_container {
+    width: 100%;
+  }
+  div.slider .space div.slider_container .line_container div.line {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    margin-bottom: 13px;
+    background-color: #EDF1F8;
+    border-radius: 100px;
+  }
+  div.slider .space div.slider_container .line_container div.line .touch_container {
+    position: absolute;
+    top: -5px;
+  }
+  div.slider .space div.slider_container .line_container div.line .touch_container .touch {
+    width: 10px;
+    height: 10px;
+    background-color: #FFFFFF;
+    border: 5px solid #5CADEA;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  div.slider .space div.slider_container .line_container div.line_years {
+    display: flex;
+    gap: 12px;
+  }
+  div.slider .space div.slider_container .line_container div.line_month {
+    display: flex;
+    gap: 12px;
+  }
+  div.slider .space div.slider_container .dates_container > div {
+    white-space: nowrap;
+    color: #999999;
+    cursor: grabbing;
+  }
+  div.slider .space div.slider_container .dates_container > div > span {
+    display: inline-block;
+    text-align: center;
+  }
+  div.slider .space div.slider_container .dates_container > div.years > span:last-child {
+    text-align: right;
+  }
+  div.slider .space div.slider_container .dates_container > div.years > span:first-child {
+    text-align: left;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span {
+    width: 46px;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span:nth-child(12n+1) {
+    color: black;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span:last-child {
+    text-align: right;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span:first-child {
+    text-align: left;
+  }
+}
+@media (min-width: 761px) {
+  div.slider {
+    overflow: hidden;
+    display: flex;
+    user-select: none;
+    padding: 0 25px;
+  }
+  div.slider > .switcher {
+    width: 179px;
+    padding-top: 98px;
+  }
+  div.slider > .switcher > div {
+    cursor: pointer;
+  }
+  div.slider > .switcher > div:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  div.slider > .switcher > div > span {
+    display: inline-block;
+  }
+  div.slider .spaces {
+    flex: auto;
+    position: relative;
+  }
+  div.slider .space {
+    position: relative;
+    overflow: hidden;
+    height: 46px;
+    padding: 90px 0 91px;
+  }
+  div.slider .space div.slider_container {
+    position: absolute;
+    top: 116px;
+    min-width: 100%;
+  }
+  div.slider .space div.slider_container .line_container {
+    width: 100%;
+  }
+  div.slider .space div.slider_container .line_container div.line {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    margin-bottom: 13px;
+    background-color: #EDF1F8;
+    border-radius: 100px;
+  }
+  div.slider .space div.slider_container .line_container div.line .touch_container {
+    position: absolute;
+    top: -5px;
+  }
+  div.slider .space div.slider_container .line_container div.line .touch_container .touch {
+    width: 10px;
+    height: 10px;
+    background-color: #FFFFFF;
+    border: 5px solid #5CADEA;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  div.slider .space div.slider_container .line_container div.line_years {
+    display: flex;
+    gap: 12px;
+  }
+  div.slider .space div.slider_container .line_container div.line_month {
+    display: flex;
+    gap: 12px;
+  }
+  div.slider .space div.slider_container .dates_container > div {
+    white-space: nowrap;
+    color: #999999;
+    cursor: grabbing;
+  }
+  div.slider .space div.slider_container .dates_container > div > span {
+    display: inline-block;
+    text-align: center;
+  }
+  div.slider .space div.slider_container .dates_container > div.years > span:last-child {
+    text-align: right;
+  }
+  div.slider .space div.slider_container .dates_container > div.years > span:first-child {
+    text-align: left;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span {
+    width: 46px;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span:nth-child(12n+1) {
+    color: black;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span:last-child {
+    text-align: right;
+  }
+  div.slider .space div.slider_container .dates_container > div.months > span:first-child {
+    text-align: left;
+  }
+}
+
+.line_active {
+  position: absolute;
+  top: 2px;
+  height: 6px;
+  background-color: #5CADEA;
+}
+
+.window {
+  font-size: 18px;
+  line-height: 24px;
+  position: absolute;
+  left: 50%;
+  padding: 6px 14px;
+  background-color: white;
+  border-radius: 12px;
+  filter: drop-shadow(0px 3px 7px rgba(14, 88, 143, 0.2));
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.window::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  position: absolute;
+  right: calc(50% - 10px);
+  filter: drop-shadow(0px 3px 7px rgba(14, 88, 143, 0.2));
+}
+.window.from {
+  bottom: 4px;
+}
+.window.from::after {
+  border-top: 10px solid white;
+  top: 100%;
+}
+.window.until {
+  top: 62px;
+}
+.window.until::after {
+  border-bottom: 10px solid white;
+  bottom: 100%;
+}
+
+.inactive {
+  border-bottom: 1px solid #D3DCF1;
+  opacity: 50%;
+}
+
+.wind_space {
+  position: absolute;
+  width: 100%;
+  top: 121px;
+}
+.wind_space .wind_slider {
+  position: absolute;
+}
+
+.error {
+  text-align: center;
+  font-size: 18px;
+  padding: 48px;
+}
+
+/*# sourceMappingURL=slider.css.map */

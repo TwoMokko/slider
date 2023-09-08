@@ -9,7 +9,7 @@ body { margin: 0; padding: 0 10%; color: $color_text_main; height: 100%; }
 
 div.slider {
 	@mixin ViewSlider($params: null) {
-		display: flex; flex-direction: GetParam($params, flex-direction); user-select: none;
+		overflow: hidden; display: flex; flex-direction: GetParam($params, flex-direction); user-select: none; padding: 0 25px;
 		> .switcher {
 			width: 179px; text-align: GetParam($params, text-align); margin: GetParam($params, margin); padding-top: 98px;
 			> div {
@@ -18,8 +18,11 @@ div.slider {
 				> span { display: inline-block; }
 			}
 		}
-		> .space {
-			flex: auto; position: relative; overflow: hidden; height: 46px; padding: 90px 0 91px;
+		.spaces {
+			flex: auto; position: relative;
+		}
+		.space {
+			position: relative; overflow: hidden; height: 46px; padding: 90px 0 91px;
 			div.slider_container {
 				position: absolute; top: 116px; min-width: 100%;
 				.line_container {
@@ -46,6 +49,8 @@ div.slider {
 						&.months > span {
 							width: 46px;
 							&:nth-child(12n + 1) { color: black; }
+							&:last-child { text-align: right; }
+							&:first-child { text-align: left; }
 						}
 					}
 				}
@@ -58,8 +63,8 @@ div.slider {
 
 .line_active { position: absolute; top: 2px; height: 6px; background-color: $color_line_active; }
 .window {
-	font-size: 18px; line-height: 24px; position: absolute; left: 50%; padding: 6px 14px; background-color: white; border-radius: 12px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center;
-	&::after{content: ''; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent;  position: absolute; right: calc(50% - 10px);  box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0;}
+	font-size: 18px; line-height: 24px; position: absolute; left: 50%; padding: 6px 14px; background-color: white; border-radius: 12px; filter: drop-shadow(0px 3px 7px rgba(14, 88, 143, 0.20)); transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center;
+	&::after{content: ''; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent;  position: absolute; right: calc(50% - 10px); filter: drop-shadow(0px 3px 7px rgba(14, 88, 143, 0.20)); }
 	&.from {
 		bottom: 4px;
 		&::after { border-top: 10px solid white; top: 100%; }
@@ -71,6 +76,11 @@ div.slider {
 }
 .active {  }
 .inactive { border-bottom: 1px solid $color_border_inactive; opacity: 50%; }
+
+.wind_space {
+	position: absolute; width: 100%; top: 121px;
+	.wind_slider { position: absolute; }
+}
 
 .error { text-align: center; font-size: 18px; padding: 48px; }
 
