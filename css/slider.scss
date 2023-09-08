@@ -58,15 +58,17 @@ div.slider {
 
 .line_active { position: absolute; top: 2px; height: 6px; background-color: $color_line_active; }
 .window {
-	font-size: 18px; line-height: 24px;
-	position: absolute; left: 50%; padding: 6px 14px; background-color: white; border-radius: 12px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%);
-	display: flex; flex-direction: column; justify-content: center; align-items: center;
-	&.from { bottom: 4px; }
-	&.until { top: 62px; }
+	font-size: 18px; line-height: 24px; position: absolute; left: 50%; padding: 6px 14px; background-color: white; border-radius: 12px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center;
+	&::after{content: ''; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent;  position: absolute; right: calc(50% - 10px);  box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0;}
+	&.from {
+		bottom: 4px;
+		&::after { border-top: 10px solid white; top: 100%; }
+	}
+	&.until {
+		top: 62px;
+		&::after { border-bottom: 10px solid white; bottom: 100%; }
+	}
 }
-//.window_from { position: absolute; left: 50%; bottom: 4px; width: 100px; height: 60px; background-color: white; border-radius: 16px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%); }
-//.window_until { position: absolute; left: 50%; top: 62px; width: 100px; height: 60px; background-color: white; border-radius: 16px; box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0; transform: translate(-50%, -50%); }
-
 .active {  }
 .inactive { border-bottom: 1px solid $color_border_inactive; opacity: 50%; }
 

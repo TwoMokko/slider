@@ -1,10 +1,4 @@
-enum States {
-	Years,
-	Months
-}
-
 class Slider {
-	state								: number;
 	year_from							: number;
 	year_until							: number;
 	year_count							: number;
@@ -45,7 +39,6 @@ class Slider {
 		if (this.year_from_active < from_year || this.year_until_active > until_year) { container.append($('<div/>', {class: 'error', text: 'Неправильно введены данные'})); return; }
 
 		this.year_count = this.year_until - this.year_from + 1;
-		this.state = States.Months;
 
 		/* Elements */
 		this.$switcher					= $('<div/>', { class: 'switcher' });
@@ -93,8 +86,8 @@ class Slider {
 		);
 
 		/* Events */
-		this.$switch_years.on('click', () => { this.state = States.Years; this.DoSwitch('years'); });
-		this.$switch_months.on('click', () => { this.state = States.Months; this.DoSwitch('months'); });
+		this.$switch_years.on('click', () => { this.DoSwitchYear(); this.PutInPlaceLine(); });
+		this.$switch_months.on('click', () => { this.DoSwitchMonth(); this.PutInPlaceLine(); });
 
 		this.$touch_from_circle.on('mousedown.slider', (e) => {
 			let startX = e.pageX;
@@ -150,13 +143,19 @@ class Slider {
 		});
 		// this.$dates_months.on('wheel', (e) => {});
 
-
 		this.CreateSliderDates();
-		this.Redraw();
-		this.DrawLine();
+		this.RedrawYear();
+		this.DrawLineForYear();
 		this.ChangeDate();
+		this.PutInPlaceLine();
 
-		$(window).on('resize', () => { this.Redraw(); this.DrawLine(); });
+		$(window).on('resize', () => {
+			this.RedrawYear();
+			this.DrawLineForYear();
+			let left = this.$slider_container.position().left;
+			if ( ( this.$space.width() - left ) > this.$slider_container.width() ) left = this.$space.width() - this.$slider_container.width();
+			this.$slider_container.css('left', left);
+		});
 	}
 
 	private CreateSliderDates(): void {
@@ -173,39 +172,43 @@ class Slider {
 		this.$dates_months.append($('<span/>', { class: 'month', text: this.year_until + 1 }));
 	}
 
-	private DoSwitch(param) {
-		switch (param) {
-			case 'years':
-				if (this.$switch_years.hasClass('active')) return;
-				this.$switch_years.removeClass('inactive').addClass('active');
-				this.$switch_months.removeClass('active').addClass('inactive');
-				this.$dates_years.removeClass('hide');
-				this.$dates_months.addClass('hide');
-				break;
-			case 'months':
-				if (this.$switch_months.hasClass('active')) return;
-				this.$switch_months.removeClass('inactive').addClass('active');
-				this.$switch_years.removeClass('active').addClass('inactive');
-				this.$dates_months.removeClass('hide');
-				this.$dates_years.addClass('hide');
-				break;
-		}
+	private PutInPlaceLine(): void {
+		let left = this.$space.width() / 10 - this.$touch_from.position().left;
+		if ((left + this.$slider_container.width()) <= this.$space.width()) left = 0;
+		this.$slider_container.css('left', left);
 	}
 
-	private Redraw(): void {
+	private DoSwitchYear(): void {
+		if (this.$switch_years.hasClass('active')) return;
+		this.$switch_years.removeClass('inactive').addClass('active');
+		this.$switch_months.removeClass('active').addClass('inactive');
+		this.$dates_years.removeClass('hide');
+		this.$dates_months.addClass('hide');
+
+		this.RedrawYear();
+		this.DrawLineForYear();
+		this.PutInPlaceLine();
+	}
+	private DoSwitchMonth() {
+		if (this.$switch_months.hasClass('active')) return;
+		this.$switch_months.removeClass('inactive').addClass('active');
+		this.$switch_years.removeClass('active').addClass('inactive');
+		this.$dates_months.removeClass('hide');
+		this.$dates_years.addClass('hide');
+
+		this.RedrawMonth();
+		this.DrawLineForMonth();
+	}
+
+	private RedrawYear(): void {
 		let width = Math.floor(this.$space.width());
-		this.RedrawYear(width, this.year_count);
-
-	}
-
-	private RedrawYear(width, count): void {
-		this.GetSizeRowForYear(width, count);
+		this.ChangeSizeRowForYear(width, this.year_count);
 		this.$dates_years.children().width(this.size * 2);
 		this.$dates_years.children(':first-child').width(this.size);
 		this.$dates_years.children(':last-child').width(this.size);
 	}
 
-	private GetSizeRowForYear(width, count): void {
+	private ChangeSizeRowForYear(width, count): void {
 		switch (count) {
 			case 1: this.size = width; break;
 			case 2: this.size = Math.floor(width / 2); break;
@@ -214,7 +217,7 @@ class Slider {
 		if (this.size < 79) this.size = 79;
 	}
 
-	private DrawLine(): void {
+	private DrawLineForYear(): void {
 		let left_from = (this.year_from_active - this.year_from) * 2 * this.size + this.size / 6 * (this.month_from_active - 1);//
 		let left_until = (this.year_until_active - this.year_from) * 2 * this.size + this.size / 6 * (this.month_until_active - 1);// + this.size / 6 * (this.month_until_active - 1)
 		let width_line = left_until - left_from;
@@ -223,6 +226,37 @@ class Slider {
 		this.$touch_until.css('left', left_until);
 		this.$line_active.css('left', left_from + 5);
 		this.$line_active.width(width_line);
+	}
+
+	private RedrawMonth(): void {
+		let width = Math.floor(this.$space.width());
+		this.ChangeSizeRowForMonth(width, this.year_count);
+		console.log(this.size);
+		this.$dates_months.children().width(this.size * 2);
+		this.$dates_months.children(':first-child').width(this.size);
+		this.$dates_months.children(':last-child').width(this.size);
+	}
+
+	private ChangeSizeRowForMonth(width, count): void {
+		switch (count) {
+			case 1: this.size = width / 24; break;
+			// case 2: this.size = width / 48; break;
+			case 2: this.size = Math.floor(width / 48); break;
+			// default: this.size = Math.floor(width / (6 * count - 2)); break;
+			default: this.size = 22; break;
+		}
+		if (this.size < 24) this.size = 24;
+	}
+
+	private DrawLineForMonth(): void {
+		// let left_from = (this.year_from_active - this.year_from) * 2 * this.size + this.size / 6 * (this.month_from_active - 1);//
+		// let left_until = (this.year_until_active - this.year_from) * 2 * this.size + this.size / 6 * (this.month_until_active - 1);// + this.size / 6 * (this.month_until_active - 1)
+		// let width_line = left_until - left_from;
+
+		// this.$touch_from.css('left', left_from);
+		// this.$touch_until.css('left', left_until);
+		// this.$line_active.css('left', left_from + 5);
+		// this.$line_active.width(width_line);
 	}
 
 	private MoveYears(e, param: string, startX ?: number, l ?: number): void {
@@ -284,5 +318,10 @@ class Slider {
 		this.$window_from.children(':last-child').text(from[0]);
 		this.$window_until.children(':first-child').text(months[until[1]]);
 		this.$window_until.children(':last-child').text(until[0]);
+
+		this.year_from_active = from[0];
+		this.month_from_active = from[1];
+		this.year_until_active = until[0];
+		this.month_until_active = until[1];
 	}
 }
