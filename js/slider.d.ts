@@ -10,7 +10,6 @@ declare class Slider {
     year_until: number;
     year_count: number;
     size: number;
-    years: number;
     year_from_active: number;
     year_until_active: number;
     month_from_active: number;

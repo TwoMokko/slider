@@ -200,7 +200,7 @@ class Slider {
 
 	private PutInPlaceLine(): void {
 		let left = this.$space.width() / 10 - this.$touch_from.position().left;
-		if ((left + this.$slider_container.width()) <= this.$space.width()) left = 0;
+		if ((this.$touch_from.position().left - this.$slider_container.position().left) <= this.$space.width()) left = 0;
 		this.$slider_container.css('left', left);
 		this.$wind_slider.css('left', left);
 	}
@@ -217,6 +217,13 @@ class Slider {
 		this.DrawLineForYear();
 		this.PutInPlaceLine();
 		this.$wind_slider.width(this.$slider_container.width());
+
+		if (this.$slider_container.position().left + this.$touch_from.position().left + 10 < 0) this.$window_from.css('left', - this.$slider_container.position().left);
+		if (- this.$slider_container.position().left + this.$space.width() < this.$touch_until.position().left + 10) this.$window_until.css('left', - this.$slider_container.position().left + this.$space.width());
+
+		if (this.$slider_container.position().left + this.$touch_from.position().left + 10 + this.$line_active.width() < 0) this.$window_until.css('left', - this.$slider_container.position().left);
+		if (- this.$slider_container.position().left + this.$space.width() + this.$line_active.width() < this.$touch_until.position().left + 10) this.$window_from.css('left', - this.$slider_container.position().left + this.$space.width());
+
 	}
 	private DoSwitchMonth() {
 		this.state = this.states.months;
@@ -228,7 +235,15 @@ class Slider {
 
 		this.RedrawMonth();
 		this.DrawLineForMonth();
+		this.PutInPlaceLine();
 		this.$wind_slider.width(this.$slider_container.width());
+
+		if (this.$slider_container.position().left + this.$touch_from.position().left + 10 < 0) this.$window_from.css('left', - this.$slider_container.position().left);
+		if (- this.$slider_container.position().left + this.$space.width() < this.$touch_until.position().left + 10) this.$window_until.css('left', - this.$slider_container.position().left + this.$space.width());
+
+		if (this.$slider_container.position().left + this.$touch_from.position().left + 10 + this.$line_active.width() < 0) this.$window_until.css('left', - this.$slider_container.position().left);
+		if (- this.$slider_container.position().left + this.$space.width() + this.$line_active.width() < this.$touch_until.position().left + 10) this.$window_from.css('left', - this.$slider_container.position().left + this.$space.width());
+
 	}
 
 	private RedrawYear(): void {
